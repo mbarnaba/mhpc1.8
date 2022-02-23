@@ -1,2 +1,2 @@
 # mhpc1.8
-Compile with ...
+Compile with ... nothing

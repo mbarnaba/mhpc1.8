@@ -1,0 +1,10 @@
+serial 
+1) compile the file
+2) optimize with compiler 
+3) no expensive math 
+4) Newton 3rd law
+5) divide in cells 
+
+parallel 
+1) force algorithm (openmp)
+2) implement mpi

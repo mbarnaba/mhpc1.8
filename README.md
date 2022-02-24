@@ -24,13 +24,13 @@ $ git push
 ```
 
 ### User Notes
-# HASAN
+# HASAN (hasanictp)
 ```
 dumped initial file as per assign4 pdf
 added git ignore
 ```
 ### User Notes
-# MARCO
+# MARCO (marco-celoria)
 ```
 abcdef
 adasdasd
@@ -38,11 +38,17 @@ adadas
 ```
 
 ### User Notes
-# MATTEO
+# MATTEO (mbarnaba)
 ```
-abcdef
-adasdasd
-adadas
+modified the readme as "git switch" is not provided by older git versions
+
+modified gitignore so that the build directory wont be tracked
+
+added a simple script that automates compilation for any build
+directory, given as first argument, './build' is the default one
+
+added our git usernames to the readme. 
+
 ```
 
 
@@ -56,5 +62,3 @@ make
 cd examples
 make
 ```
-
-

@@ -12,6 +12,14 @@
 #include <math.h>
 #include <sys/time.h>
 
+/////////////////////////////////////////////////////////////////////////
+// #if defined(_OPENMP)
+//#include <omp.h>
+//#endif
+/////////////////////////////////////////////////////////////////////////
+
+
+
 /* generic file- or pathname buffer length */
 #define BLEN 200
 
@@ -112,14 +120,19 @@ static void force(mdsys_t *sys)
     azzero(sys->fz,sys->natoms);
 
 
-/*
-We will always foucus on this part for mpi and openmp calculation
-*/
 
-
+//////////////////////////////////////////////////////////////////////////////////////
+//  We will always foucus on this part for mpi and openmp calculation
+//#if defined(_OPENMP)
+//#pragma omp unroll partial(4)
 //# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
+//#endif
+//////////////////////////////////////////////////////////////////////////////////////
+
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
+
+       
 
             /* particles have no interactions with themselves */
             if (i==j) continue;

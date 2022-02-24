@@ -111,6 +111,13 @@ static void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
+
+/*
+We will always foucus on this part for mpi and openmp calculation
+*/
+
+
+//# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
 
@@ -138,6 +145,10 @@ static void force(mdsys_t *sys)
         }
     }
 }
+
+
+
+
 
 /* velocity verlet */
 static void velverlet(mdsys_t *sys)

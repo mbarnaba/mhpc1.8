@@ -52,6 +52,9 @@ mkdir build
 mcd build 
 cmake .. 
 cmake --build .
+make
+cd examples
+make
 ```
 
 

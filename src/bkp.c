@@ -13,9 +13,9 @@
 #include <sys/time.h>
 
 /////////////////////////////////////////////////////////////////////////
-#if defined(_OPENMP)
-#include <omp.h>
-#endif
+// #if defined(_OPENMP)
+//#include <omp.h>
+//#endif
 /////////////////////////////////////////////////////////////////////////
 
 
@@ -133,9 +133,10 @@ static void force(mdsys_t *sys)
 //  We will always foucus on this part for mpi and openmp calculation
 //#if defined(_OPENMP)
 //#pragma omp unroll partial(4)
-//# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r) //reduction(+:epot)
+//# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
 //#endif
-//////////////////////////////////////////////////////////////////////////////////////  
+//////////////////////////////////////////////////////////////////////////////////////
+    
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
 
@@ -196,7 +197,7 @@ static void force_3law(mdsys_t *sys)
     
     //#if defined(_OPENMP)
     //#pragma omp unroll partial(4)
-   // # pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
+    //# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
     //#endif
     for(i=0; i < (sys->natoms)-1; ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {

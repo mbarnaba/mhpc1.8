@@ -120,6 +120,7 @@ static void force(mdsys_t *sys)
     azzero(sys->fz,sys->natoms);
 
 
+
 //////////////////////////////////////////////////////////////////////////////////////
 //  We will always foucus on this part for mpi and openmp calculation
 //#if defined(_OPENMP)
@@ -127,6 +128,7 @@ static void force(mdsys_t *sys)
 //# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
 //#endif
 //////////////////////////////////////////////////////////////////////////////////////
+
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
 

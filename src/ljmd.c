@@ -36,6 +36,7 @@ struct _mdsys {
     double *rx, *ry, *rz;
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
+    int nthreads;
 };
 typedef struct _mdsys mdsys_t;
 
@@ -111,9 +112,8 @@ static void force(mdsys_t *sys)
 {
     double r,ffac;
     double rx,ry,rz;
-    double sigma6, sigma12;
-    double c6,c12;
-    double rcsq, rsq;
+    double c6, c12, rcsq;
+    double sigma, sigma6;
     int i,j;
 
     /* zero energy and forces */
@@ -122,7 +122,13 @@ static void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
-
+    sigma = sys->sigma ;
+    sigma6  = sigma * sigma * sigma * sigma * sigma * sigma;
+    c6 =4.0 * sys->epsilon * sigma6;
+    c12=4.0 * sys->epsilon * sigma6*sigma6;
+    rcsq = sys->rcut * sys->rcut;
+    
+    
 //////////////////////////////////////////////////////////////////////////////////////
 //  We will always foucus on this part for mpi and openmp calculation
 //#if defined(_OPENMP)
@@ -130,14 +136,6 @@ static void force(mdsys_t *sys)
 //# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
 //#endif
 //////////////////////////////////////////////////////////////////////////////////////
-    
-    
-    
-    sigma6  = sys->sigma * sys->sigma * sys->sigma * sys->sigma * sys->sigma * sys->sigma;
-    sigma12 = sigma6 * sigma6;
-    c12=4.0 * sys->epsilon * sigma12;
-    c6 =4.0 * sys->epsilon * sigma6;
-    rcsq = sys->rcut * sys->rcut;
     
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
@@ -150,6 +148,7 @@ static void force(mdsys_t *sys)
             ry=pbc(sys->ry[i] - sys->ry[j], 0.5*sys->box);
             rz=pbc(sys->rz[i] - sys->rz[j], 0.5*sys->box);
             r = sqrt(rx*rx + ry*ry + rz*rz);
+            double rsq;
             rsq = rx*rx + ry*ry + rz*rz;
             /* compute force and energy if within cutoff */
             if (r < sys->rcut) {
@@ -179,11 +178,10 @@ static void force(mdsys_t *sys)
 /* compute forces */
 static void force_3law(mdsys_t *sys)
 {
-    double r,ffac;
+    double ffac;
     double rx,ry,rz;
-    double sigma6, sigma12;
-    double c6,c12;
-    double rcsq, rsq;
+    double c6, c12, rcsq;
+    double sigma, sigma6;
     int i,j;
 
     /* zero energy and forces */
@@ -191,19 +189,23 @@ static void force_3law(mdsys_t *sys)
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
-    
-    sigma6  = sys->sigma * sys->sigma * sys->sigma * sys->sigma * sys->sigma * sys->sigma;
-    sigma12 = sigma6 * sigma6;
-    c12=4.0 * sys->epsilon * sigma12;
+    sigma = sys->sigma ;
+    sigma6  = sigma * sigma * sigma * sigma * sigma * sigma;
     c6 =4.0 * sys->epsilon * sigma6;
+    c12=4.0 * sys->epsilon * sigma6*sigma6;
     rcsq = sys->rcut * sys->rcut;
     
+    //#if defined(_OPENMP)
+    //#pragma omp unroll partial(4)
+    //# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
+    //#endif
     for(i=0; i < (sys->natoms)-1; ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {
             /* get distance between particle i and j */
             rx=pbc(sys->rx[i] - sys->rx[j], 0.5*sys->box);
             ry=pbc(sys->ry[i] - sys->ry[j], 0.5*sys->box);
             rz=pbc(sys->rz[i] - sys->rz[j], 0.5*sys->box);
+            double rsq;
             rsq = rx*rx + ry*ry + rz*rz;
             /* compute force and energy if within cutoff */
              if (rsq < rcsq) {

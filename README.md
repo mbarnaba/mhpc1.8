@@ -1,5 +1,5 @@
-# !!! we need pro version for branch protection
-# !!! so always work with your branch and merge it to the main branch
+## !!! we need pro version for branch protection
+### !!! so always work with your branch and merge it to the main branch
 
 
 ```
@@ -7,8 +7,7 @@
 2.create your branch with branch_name
 3.switch to that branch and set upstream
 
-!!! branch protection will not work bcoz we need pro version
-!!! so always work with ur branch and merge it to the main branch
+
 
 --------------new branch-----------------
 $ git branch

@@ -21,6 +21,7 @@ $ git push                  //if u have set the $ git push --set-upstream origin
 $ git switch main 
 $ git merge user_branch
 $ git push
+```
 
 ### User Notes
 # HASAN

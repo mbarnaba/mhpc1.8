@@ -14,6 +14,11 @@
 
 /* generic file- or pathname buffer length */
 #define BLEN 200
+////////////////////////////////////////////////////////////////////////
+//#if defined(_OPENMP)
+//#include <omp.h>
+//#endif
+/////////////////////////////////////////////////////////////////////////
 
 /* a few physical constants */
 const double kboltz=0.0019872067;     /* boltzman constant in kcal/mol/K */
@@ -110,7 +115,11 @@ static void force(mdsys_t *sys)
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
-
+/////////////////////////////////////////////////////////////////////////////
+//#if defined(_OPENMP)
+//#pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,f1x, fy, fz) reduction(+:epot)
+//#endif
+///////////////////////////////////////////////////////////////////////////
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
 

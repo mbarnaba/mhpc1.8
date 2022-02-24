@@ -1,5 +1,9 @@
-## !!! we need pro version for branch protection
+### !!! we need pro version for branch protection
 ### !!! so always work with your branch and merge it to the main branch
+
+* clone the repo from matteo website
+* create your branch with branch_name
+* switch to that branch and set upstream
 
 
 ### Daily routine followed by each member
@@ -13,51 +17,44 @@ work from your branch after that
 
 $ git add .                 //add the files
 $ git commit -m "comment"
-$ git push                  //if u have set the upstream
+$ git push                  //if u have set the $ git push --set-upstream origin branch_name
 $ git switch main 
 $ git merge user_branch
 $ git push
-
 ```
 
-
-
+### User Notes
+# HASAN
+```
+dumped initial file as per assign4 pdf
+added git ignore
+```
+### User Notes
+# MARCO
+```
+abcdef
+adasdasd
+adadas
 ```
 
-
-1.clone the repo from matteo website
-2.create your branch with branch_name
-3.switch to that branch and set upstream
-
-
-
---------------new branch-----------------
-$ git branch
-$ git switch branch_name
-$ git checkout branch_name
-$ git switch -c branch_name   
-
------------delete branch----------------
-
-$ git branch -d branch_name
-$ git branch -D branch_name
-
---------------Fast forward merge
-
-$ git switch master
-then
-$ git merge branch_name
-
---------------------upstream----------
-$ git push --set-upstream origin branch_name
+### User Notes
+# MATTEO
 ```
+abcdef
+adasdasd
+adadas
+```
+
 
 ## to compile and run the code
 ```
 mkdir build 
-mcd build 
+cd build 
 cmake .. 
 cmake --build .
+make
+cd examples
+make
 ```
 
 

@@ -49,7 +49,7 @@ adadas
 ## to compile and run the code
 ```
 mkdir build 
-mcd build 
+cd build 
 cmake .. 
 cmake --build .
 make

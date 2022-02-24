@@ -31,7 +31,7 @@ $ git merge branch_name
 $ git push --set-upstream origin branch_name
 ```
 
-# To compile the and run the code
+## to compile and run the code
 ```
 mkdir build 
 mcd build 

@@ -26,6 +26,16 @@ target_compile_options(
     -Wall -g -O3 -ffast-math -fomit-frame-pointer
 )
 
+# look for OpenMP and OpenMP library
+#find_package(OpenMP REQUIRED)
+#include(CheckIncludeFile)
+#check_include_file(omp.h HAVE_OMP_H)
+#if(!HAVE_OMP_H)
+#    message(FATAL_ERROR "Must have OpenMP runtime and omp.h header file")
+#endif()
+#add_executable(pi_omp pi_omp.c)
+#target_link_libraries(pi_omp PRIVATE OpenMP::OpenMP_C)
+
 
 if(ENABLE_TESTING)
   enable_testing()

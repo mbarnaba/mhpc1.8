@@ -1,12 +1,6 @@
-# !!! branch protection will not work bcoz we need pro version
-# !!! so always work with ur branch and merge it to the main branch
+# !!! we need pro version for branch protection
+# !!! so always work with your branch and merge it to the main branch
 
-```
-mkdir build 
-mcd build 
-cmake .. 
-cmake --build .
-```
 
 ```
 1.clone the repo from matteo website
@@ -24,11 +18,8 @@ $ git switch -c branch_name
 
 -----------delete branch----------------
 
-
 $ git branch -d branch_name
 $ git branch -D branch_name
-
-
 
 --------------Fast forward merge
 
@@ -39,4 +30,13 @@ $ git merge branch_name
 --------------------upstream----------
 $ git push --set-upstream origin branch_name
 ```
+
+# To compile the and run the code
+```
+mkdir build 
+mcd build 
+cmake .. 
+cmake --build .
+```
+
 

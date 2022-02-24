@@ -53,6 +53,8 @@ added our git usernames to the readme.
 
 
 ## to compile and run the code
+cmake is required!
+
 ```
 mkdir build 
 cd build 
@@ -62,3 +64,10 @@ make
 cd examples
 make
 ```
+
+Or simply: 
+```
+./compile.sh [build_dir]
+```
+where build_dir is optional (if not given it will default to './build') and can be 
+any directory. 

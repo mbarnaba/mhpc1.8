@@ -111,6 +111,9 @@ static void force(mdsys_t *sys)
 {
     double r,ffac;
     double rx,ry,rz;
+    double sigma6, sigma12;
+    double c6,c12;
+    double rcsq, rsq;
     int i,j;
 
     /* zero energy and forces */
@@ -128,7 +131,12 @@ static void force(mdsys_t *sys)
 //# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r, ffac,fx, fy, fz,ffac) reduction(+:epot)
 //#endif
 //////////////////////////////////////////////////////////////////////////////////////
-
+    sigma6  = sys->sigma * sys->sigma * sys->sigma * sys->sigma * sys->sigma * sys->sigma;
+    sigma12 = sigma6 * sigma6;
+    c12=4.0 * sys->epsilon * sigma12;
+    c6 =4.0 * sys->epsilon * sigma6;
+    rcsq = sys->rcut * sys->rcut;
+    
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
 
@@ -142,9 +150,13 @@ static void force(mdsys_t *sys)
             ry=pbc(sys->ry[i] - sys->ry[j], 0.5*sys->box);
             rz=pbc(sys->rz[i] - sys->rz[j], 0.5*sys->box);
             r = sqrt(rx*rx + ry*ry + rz*rz);
-
+            rsq = rx*rx + ry*ry + rz*rz;
             /* compute force and energy if within cutoff */
             if (r < sys->rcut) {
+            // if (rsq < rcsq) {
+                //double r6, rinv; rinv = 1.0/rsq; r6=rinv*rinv*rinv;
+                //ffac = ( 12.0 * c12 * r6 - 6.0 * c6 ) * r6 * rinv ;
+                //sys->epot += r6 * ( c12 * r6 - c6 );
                 ffac = -4.0*sys->epsilon*(-12.0*pow(sys->sigma/r,12.0)/r
                                          +6*pow(sys->sigma/r,6.0)/r);
 

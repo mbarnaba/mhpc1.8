@@ -133,7 +133,7 @@ static void force(mdsys_t *sys)
 //  We will always foucus on this part for mpi and openmp calculation
 //#if defined(_OPENMP)
 //#pragma omp unroll partial(4)
-//# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r) //reduction(+:epot)
+# pragma omp parallel for default(shared) private(i, j, rx, ry, rz, r) //reduction(+:epot)
 //#endif
 //////////////////////////////////////////////////////////////////////////////////////  
     for(i=0; i < (sys->natoms); ++i) {

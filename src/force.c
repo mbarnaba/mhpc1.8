@@ -1,5 +1,4 @@
 #include "force.h"
-
 #include <math.h>
 #include <ctype.h>
 
@@ -56,18 +55,7 @@ void force(mdsys_t *sys)
             rx=pbc(sys->rx[i] - sys->rx[j], half_box,twice_boxby2);
             ry=pbc(sys->ry[i] - sys->ry[j], half_box,twice_boxby2);
             rz=pbc(sys->rz[i] - sys->rz[j], half_box,twice_boxby2);
-            //r = sqrt(rx*rx + ry*ry + rz*rz);
-      
-            /* compute force and energy if within cutoff */
-            /**if (r < sys->rcut) {
-                ffac = -4.0*sys->epsilon*(-12.0*pow(sys->sigma/r,12.0)/r
-                                         +6*pow(sys->sigma/r,6.0)/r);
-                
-                //We use Netwon third law: the following is used twice
-                //So it's not multiplied by 0.5 anymore
-                sys->epot += 4.0*sys->epsilon*(pow(sys->sigma/r,12.0)
-                                               -pow(sys->sigma/r,6.0));
-			**/
+            
 			rsq = rx*rx + ry*ry + rz*rz;
 			if (rsq < rcsq){
 				

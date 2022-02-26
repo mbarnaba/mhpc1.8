@@ -75,16 +75,16 @@ if(ENABLE_TESTING)
 
     add_test(
         NAME run
-        COMMAND ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} run
+        COMMAND ${BASH_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} run
     )
     
     add_test(
         NAME writes
-        COMMAND ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} writes
+        COMMAND ${BASH_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} writes
     )
     
     add_test(
         NAME output
-        COMMAND ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} output
+        COMMAND ${BASH_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} output
     )
 endif()

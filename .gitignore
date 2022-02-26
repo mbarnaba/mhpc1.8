@@ -116,7 +116,9 @@ _deps
 # External projects
 *-prefix/
 
-
+##--------------------------------------
+*.dat
+*.xyz
 
 
 

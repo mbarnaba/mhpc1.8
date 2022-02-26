@@ -15,12 +15,10 @@ project( ${target} LANGUAGES C )
 #ndif()
 
 add_compile_definitions( LJMD_VERSION=0.1 )
-
-
 file( GLOB_RECURSE SRC_FILES src/ljmd.c src/input.c src/output.c src/force.c src/utilities.c src/verlet.c )
 #file( GLOB_RECURSE SRC_FILES src/ljmd.c src/force.c )
 
-set(HEADER_FILES ${YOUR_DIRECTORY}include/force.h )
+
 
 include( CheckLibraryExists )
 
@@ -36,6 +34,7 @@ endif (HAVE_LIB_M)
 #if(!HAVE_OMP_H)
 #    message(FATAL_ERROR "Must have OpenMP runtime and omp.h header file")
 #endif()
+set(HEADER_FILES ${CMAKE_SOURCE_DIR}/include )
 include_directories(${CMAKE_SOURCE_DIR}/include)
 add_executable( ${target} ${SRC_FILES} )
 
@@ -48,6 +47,17 @@ add_executable( ${target} ${SRC_FILES} )
 #  target_compile_definitions(${target} PUBLIC "IS_GNU_C_COMPILER")
 #endif()
 
+
+# let the preprocessor know about the host processor architecture
+if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "i386")
+  message(STATUS "i386 architecture detected")
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "i686")
+  message(STATUS "i686 architecture detected")
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "x86_64")
+  message(STATUS "x86_64 architecture detected")
+else()
+  message(STATUS "host processor architecture is unknown")
+endif()
 
 #target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS} OpenMP::OpenMP_C )
 target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS}  )

@@ -8,9 +8,9 @@ project( ${target} LANGUAGES C )
 add_compile_definitions( LJMD_VERSION=0.1 )
 
 
-file( GLOB_RECURSE SRC_FILES src/ljmd.c )
+file( GLOB_RECURSE SRC_FILES src/ljmd.c src/input.c src/output.c src/force.c src/utilities.c src/verlet.c )
 #file( GLOB_RECURSE SRC_FILES src/ljmd.c src/force.c )
-add_executable( ${target} ${SRC_FILES} )
+
 
 include( CheckLibraryExists )
 
@@ -20,15 +20,16 @@ if (HAVE_LIB_M)
 endif (HAVE_LIB_M)
 
 # look for OpenMP and OpenMP library
-find_package(OpenMP REQUIRED)
-include(CheckIncludeFile)
-check_include_file(omp.h HAVE_OMP_H)
-if(!HAVE_OMP_H)
-    message(FATAL_ERROR "Must have OpenMP runtime and omp.h header file")
-endif()
+#find_package(OpenMP REQUIRED)
+#include(CheckIncludeFile)
+#check_include_file(omp.h HAVE_OMP_H)
+#if(!HAVE_OMP_H)
+#    message(FATAL_ERROR "Must have OpenMP runtime and omp.h header file")
+#endif()
 
-target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS} OpenMP::OpenMP_C )
-#target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS} )
+add_executable( ${target} ${SRC_FILES} )
+#target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS} OpenMP::OpenMP_C )
+target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS} )
 
 target_compile_options( 
     ${target} PRIVATE 

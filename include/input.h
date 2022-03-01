@@ -14,4 +14,8 @@
 int get_a_line(FILE *fp, char *buf);
 int read_input(mdsys_t* sys, int * nprint, char * restfile, char * trajfile, char * ergfile, char * line);
 
+#ifdef _MPI
+void mpi_finalize(mdsys_t* sys); 
+#endif
+
 #endif

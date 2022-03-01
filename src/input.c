@@ -33,6 +33,10 @@ int get_a_line(FILE *fp, char *buf)
 }
 
 
+#ifdef _MPI
+static int mpi_initialize(mdsys_t* sys); 
+#endif
+
 int read_input(mdsys_t* sys, int * nprint, char * restfile, char * trajfile, char * ergfile, char * line)
 {
 	FILE *fp;
@@ -88,6 +92,44 @@ int read_input(mdsys_t* sys, int * nprint, char * restfile, char * trajfile, cha
         perror("cannot read restart file");
         return 3;
     }
-
+    
+#ifdef _MPI
+    return mpi_initialize( sys ); 
+#endif 
     return 0;
 }
+
+
+#ifdef _MPI
+static int mpi_initialize(mdsys_t* sys) {
+    int ret = 0; 
+    
+    ret = MPI_Init( NULL, NULL ); 
+    if (ret != 0) return ret; 
+
+    sys->mpicomm = MPI_COMM_WORLD; 
+
+    ret = MPI_Comm_size( sys->mpicomm, &sys->mpiranks );
+    if (ret != 0) return ret; 
+
+    ret = MPI_Comm_rank( sys->mpicomm, &sys->mpirank );
+    if (ret != 0) return ret; 
+
+    sys->rank_fx = (double*) malloc( sys->natoms * sizeof(double) );
+    sys->rank_fy = (double*) malloc( sys->natoms * sizeof(double) );
+    sys->rank_fz = (double*) malloc( sys->natoms * sizeof(double) );
+
+    #ifndef NDEBUG
+    printf( "MPI successfuly initialized with %d ranks\n", sys->mpiranks ); 
+    #endif 
+    return ret; 
+}
+
+void mpi_finalize(mdsys_t* sys) {
+    free( sys->rank_fx ); 
+    free( sys->rank_fy ); 
+    free( sys->rank_fz ); 
+
+    MPI_Finalize();
+}
+#endif 

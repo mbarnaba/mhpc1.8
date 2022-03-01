@@ -76,5 +76,8 @@ int main(int argc, char **argv)
     free(sys.fy);
     free(sys.fz);
 
+#ifdef _MPI
+    mpi_finalize( sys ); 
+#endif 
     return 0;
 }

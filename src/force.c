@@ -42,9 +42,11 @@ void force(mdsys_t *sys)
 	
 	//Constants added to avoid computing pow,sqrt etc.
 	
-	double c12 = 4.0*sys->epsilon*pow(sys->sigma,12.0);
-	double c6 = 4.0*sys->epsilon*pow(sys->sigma,6.0);
-	const double rcsq = sys->rcut * sys->rcut;
+    const double sigma  = sys->sigma ;
+    const double sigma6 = sigma * sigma * sigma * sigma * sigma * sigma ;
+    const double c6  = 4.0 * sys->epsilon * sigma6 ;
+    const double c12 = 4.0 * sys->epsilon * sigma6 * sigma6 ;
+    const double rcsq = sys->rcut * sys->rcut;
 	double rsq,rinv,r6;
 	
     for(i=0; i < (sys->natoms - 1); ++i) {

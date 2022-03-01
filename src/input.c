@@ -75,10 +75,10 @@ int read_input(mdsys_t* sys, int * nprint, char * restfile, char * trajfile, cha
     /* read restart */
     if(fp) {
         for (i=0; i<sys->natoms; ++i) {
-            fscanf(fp,"%lf%lf%lf",sys->rx+i, sys->ry+i, sys->rz+i);
+            if(fscanf(fp,"%lf%lf%lf",sys->rx+i, sys->ry+i, sys->rz+i));
         }
         for (i=0; i<sys->natoms; ++i) {
-            fscanf(fp,"%lf%lf%lf",sys->vx+i, sys->vy+i, sys->vz+i);
+            if(fscanf(fp,"%lf%lf%lf",sys->vx+i, sys->vy+i, sys->vz+i));
         }
         fclose(fp);
         azzero(sys->fx, sys->natoms);

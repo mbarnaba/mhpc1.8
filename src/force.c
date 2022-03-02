@@ -85,8 +85,7 @@ void force(mdsys_t *sys)
 #else // _MPI 
 
 /* compute forces MPI version */
-void force(mdsys_t *sys) 
-{
+void force(mdsys_t *sys) {
     double ffac;
     double rx,ry,rz;
     int i,j;
@@ -96,7 +95,7 @@ void force(mdsys_t *sys)
 
     /* zero energy and forces */
     double rank_epot = 0.0; // each rank will add to its local variable
-    azzero( sys->rank_fx,zsys->natoms );
+    azzero( sys->rank_fx, sys->natoms );
     azzero( sys->rank_fy, sys->natoms );
     azzero( sys->rank_fz, sys->natoms );
     

@@ -78,18 +78,15 @@ set(ENABLE_TESTING true)
 if(ENABLE_TESTING)
     enable_testing()
 
-    add_test(
-        NAME run
-        COMMAND ${BASH_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} run
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/examples/argon_108.inp ${CMAKE_CURRENT_BINARY_DIR}
     )
-    
-    add_test(
-        NAME writes
-        COMMAND ${BASH_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} writes
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/examples/argon_108.rest ${CMAKE_CURRENT_BINARY_DIR}
     )
-    
     add_test(
-        NAME output
-        COMMAND ${BASH_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests.sh ${CMAKE_SOURCE_DIR} output
+        NAME RunTest 
+        COMMAND /bin/sh -c "${CMAKE_CURRENT_BINARY_DIR}/${target} < argon_108.inp && test -f argon_108.dat && test -f argon_108.xyz"
     )
+    set_tests_properties( RunTest PROPERTIES PASS_REGULAR_EXPRESSION ".*Simulation Done.*" )
 endif()

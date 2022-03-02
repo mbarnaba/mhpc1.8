@@ -32,7 +32,8 @@ const double mvsq2e=2390.05736153349; /* m*v^2 in kcal/mol */
 int main(int argc, char **argv) {
     int nprint;
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
-    FILE *traj,*erg;
+    FILE *traj = NULL;
+    FILE *erg = NULL;
     mdsys_t sys;
     int mpirank = 0; // this is true even without MPI 
 
@@ -49,8 +50,8 @@ int main(int argc, char **argv) {
     ekin(&sys);
 
     if (mpirank == 0) {
-        erg=fopen(ergfile,"w");
-        traj=fopen(trajfile,"w");
+        erg = fopen(ergfile,"w");
+        traj = fopen(trajfile,"w");
 
         printf("Starting simulation with %d atoms for %d steps.\n",sys.natoms, sys.nsteps);
         printf("     NFI            TEMP            EKIN                 EPOT              ETOT\n");

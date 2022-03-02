@@ -15,6 +15,10 @@ else()
   message(STATUS "Configuring on/for ${CMAKE_SYSTEM_NAME}")
 endif()
 
+
+option( BUILD_WITH_MPI "Build with MPI support" ON )
+
+
 add_compile_definitions( LJMD_VERSION=0.1 )
 file( GLOB_RECURSE SRC_FILES src/ljmd.c src/input.c src/output.c src/force.c src/utilities.c src/verlet.c )
 #file( GLOB_RECURSE SRC_FILES src/ljmd.c src/force.c )
@@ -32,17 +36,20 @@ if(!HAVE_OMP_H)
     message(FATAL_ERROR "Must have OpenMP runtime and omp.h header file")
 endif()
 
+
 # look for mpi library
-find_package(MPI REQUIRED)
-include(CheckIncludeFile)
-check_include_file(mpi.h HAVE_MPI_H)
-if(HAVE_MPI_H)
-    add_compile_definitions( _MPI=yes )
-    message( "compiling with MPI" )
-    list( APPEND SRC_FILES ${PROJECT_SOURCE_DIR}/src/mympi.c )
-    list( APPEND EXTRA_LIBS ${MPI_C_LIBRARIES} )
-else()
-    message(FATAL_ERROR "Must have mpi.h header file")
+if (BUILD_WITH_MPI) 
+    find_package(MPI REQUIRED)
+    include(CheckIncludeFile)
+    check_include_file(mpi.h HAVE_MPI_H)
+    if(HAVE_MPI_H)
+        add_compile_definitions( _MPI=yes )
+        message( "compiling with MPI" )
+        list( APPEND SRC_FILES ${PROJECT_SOURCE_DIR}/src/mympi.c )
+        list( APPEND EXTRA_LIBS ${MPI_C_LIBRARIES} )
+    else()
+        message(FATAL_ERROR "Must have mpi.h header file")
+    endif()
 endif()
 
 
@@ -79,14 +86,32 @@ if(ENABLE_TESTING)
     enable_testing()
 
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/examples/argon_108.inp ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/examples/argon_108.inp ${CMAKE_CURRENT_BINARY_DIR}
     )
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/examples/argon_108.rest ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/examples/argon_108.rest ${CMAKE_CURRENT_BINARY_DIR}
     )
     add_test(
         NAME RunTest 
         COMMAND /bin/sh -c "${CMAKE_CURRENT_BINARY_DIR}/${target} < argon_108.inp && test -f argon_108.dat && test -f argon_108.xyz"
     )
     set_tests_properties( RunTest PROPERTIES PASS_REGULAR_EXPRESSION ".*Simulation Done.*" )
-endif()
+    
+
+    if (BUILD_WITH_MPI) 
+        set( nranks 2 )
+
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/wrapper.sh ${CMAKE_CURRENT_BINARY_DIR}
+        )
+        add_test(
+            NAME RunTestMPI
+            COMMAND 
+            /bin/sh -c "mpirun -np ${nranks} ${CMAKE_CURRENT_BINARY_DIR}/wrapper.sh && test -f argon_108.dat && test -f argon_108.xyz"
+        )
+        set_tests_properties( 
+            RunTestMPI 
+            PROPERTIES PASS_REGULAR_EXPRESSION ".*MPI successfuly finalized with ${nranks} ranks*."
+        )
+    endif(BUILD_WITH_MPI)
+endif(ENABLE_TESTING)

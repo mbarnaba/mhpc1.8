@@ -1,6 +1,12 @@
 #ifndef PROT_H
 #define PROT_H
 
+
+#ifdef _MPI
+#include <mpi.h>
+#endif  
+
+
 /* generic file- or pathname buffer length */
 #define BLEN 200
 /* a few physical constants */
@@ -15,6 +21,13 @@ struct _mdsys {
     double *rx, *ry, *rz;
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
+
+#ifdef _MPI
+    MPI_Comm mpicomm; 
+    int mpiranks; 
+    int mpirank; 
+    double *rank_fx, *rank_fy, *rank_fz; 
+#endif 
 };
 typedef struct _mdsys mdsys_t;
 

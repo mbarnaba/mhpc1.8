@@ -1,6 +1,8 @@
 #ifndef PROT_H
 #define PROT_H
 
+#include <stdlib.h>
+#include <stdio.h>
 
 #ifdef _MPI
 #include <mpi.h>

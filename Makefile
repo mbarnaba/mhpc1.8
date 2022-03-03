@@ -19,3 +19,6 @@ check: serial
 
 openmp:
 	$(MAKE) $(MFLAGS) -C src openmp
+
+mpi: 
+	$(MAKE) $(MFLAGS) -C src mpi

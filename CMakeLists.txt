@@ -16,7 +16,11 @@ else()
 endif()
 
 
-option( BUILD_WITH_MPI "Build with MPI support" ON )
+option( USE_COMPILER "Build with compilar optimizations enabled I support" ON )
+option( USE_NEWTON "Build with Newton's 3rd law (halvs the calculations)" ON )
+option( USE_MATH "Build with fast math operations and better organization of data" ON )
+option( USE_MPI "Build with MPI support" ON )
+option( USE_OMP "Build with Open MP support" OFF )
 
 
 add_compile_definitions( LJMD_VERSION=0.1 )
@@ -28,27 +32,37 @@ if (HAVE_LIB_M)
     set( EXTRA_LIBS ${EXTRA_LIBS} m )                                                                                                      
 endif (HAVE_LIB_M)
 
+
 # look for OpenMP and OpenMP library
-find_package(OpenMP REQUIRED)
-include(CheckIncludeFile)
-check_include_file(omp.h HAVE_OMP_H)
-if(!HAVE_OMP_H)
-    message(FATAL_ERROR "Must have OpenMP runtime and omp.h header file")
+if (USE_OMP) 
+    find_package(OpenMP REQUIRED)
+    include(CheckIncludeFile)
+    check_include_file( omp.h HAVE_OMP_H )
+    if(!HAVE_OMP_H)
+        add_compile_definitions( _OMP=yes )
+	target_compile_options( 
+        ${target} PRIVATE 
+        -Wall -g -O3 -ffast-math -fomit-frame-pointer -fopenmp
+    )
+        list( APPEND EXTRA_LIBS ${OMP_C_LIBRARIES} )
+    else()
+        message( FATAL_ERROR "Must have OpenMP runtime and omp.h header file" )
+    endif()
 endif()
 
 
 # look for mpi library
-if (BUILD_WITH_MPI) 
-    find_package(MPI REQUIRED)
+if (USE_MPI) 
+    find_package( MPI REQUIRED )
     include(CheckIncludeFile)
-    check_include_file(mpi.h HAVE_MPI_H)
+    check_include_file( mpi.h HAVE_MPI_H )
+    message( "building with MPI" )
     if(HAVE_MPI_H)
         add_compile_definitions( _MPI=yes )
-        message( "compiling with MPI" )
         list( APPEND SRC_FILES ${PROJECT_SOURCE_DIR}/src/mympi.c )
         list( APPEND EXTRA_LIBS ${MPI_C_LIBRARIES} )
     else()
-        message(FATAL_ERROR "Must have mpi.h header file")
+        message( FATAL_ERROR "Must have mpi.h header file" )
     endif()
 endif()
 
@@ -73,11 +87,24 @@ endif()
 #target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS} OpenMP::OpenMP_C MPI::MPI_C )
 
 target_link_libraries( ${target} PUBLIC ${EXTRA_LIBS}  )
-target_include_directories( ${target} PRIVATE ${YOUR_DIRECTORY})
-target_compile_options( 
-    ${target} PRIVATE 
-    -Wall -g -O3 -ffast-math -fomit-frame-pointer -fopenmp
-)
+
+if (USE_COMPILER) 
+    message( "using compiler opitmizations" )
+    target_compile_options( 
+        ${target} PRIVATE 
+        -Wall -g -O3 -ffast-math -fomit-frame-pointer 
+    )
+endif()
+
+if (USE_NEWTON) 
+    message( "using Newton's 3rd law" )
+    add_compile_definitions( _NEWTON=yes )
+endif()
+
+if (USE_MATH) 
+    message( "using fast math operations and better organization of data" )
+    add_compile_definitions( _MATH=yes )
+endif()
 
 
 # let's enable this by default cause we are in a early dev stage
@@ -91,6 +118,14 @@ if(ENABLE_TESTING)
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/examples/argon_108.rest ${CMAKE_CURRENT_BINARY_DIR}
     )
+
+ execute_process(
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/examples/argon_2916.inp ${CMAKE_CURRENT_BINARY_DIR}
+    )
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/examples/argon_2916.rest ${CMAKE_CURRENT_BINARY_DIR}
+    )
+    
     add_test(
         NAME RunTest 
         COMMAND /bin/sh -c "${CMAKE_CURRENT_BINARY_DIR}/${target} < argon_108.inp && test -f argon_108.dat && test -f argon_108.xyz"

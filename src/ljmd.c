@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <math.h>
+#include <sys/time.h>
 
 #include "prototypes.h"
 #include "input.h"
@@ -21,6 +22,14 @@
 #ifdef _MPI 
 #include "mympi.h"
 #endif 
+
+
+static double wallclock(void) {
+    struct timeval t;
+    gettimeofday( &t, 0 );
+    const double seconds = ( (double) t.tv_sec) + 1.0e-6 * ( (double) t.tv_usec );
+    return seconds; 
+}
 
 
 /* a few physical constants */
@@ -36,6 +45,8 @@ int main(int argc, char **argv) {
     FILE *erg = NULL;
     mdsys_t sys;
     int mpirank = 0; // this is true even without MPI 
+    
+    double seconds = 0; 
 
     read_input( &sys, &nprint, restfile, trajfile, ergfile, line );
 
@@ -45,9 +56,11 @@ int main(int argc, char **argv) {
     #endif 
 
     /* initialize forces and energies.*/
-    sys.nfi=0;
-    force(&sys);
-    ekin(&sys);
+    sys.nfi = 0;
+    seconds -= wallclock(); 
+    force( &sys );
+    ekin( &sys );
+    seconds += wallclock(); 
 
     if (mpirank == 0) {
         erg = fopen(ergfile,"w");
@@ -55,9 +68,9 @@ int main(int argc, char **argv) {
 
         printf("Starting simulation with %d atoms for %d steps.\n",sys.natoms, sys.nsteps);
         printf("     NFI            TEMP            EKIN                 EPOT              ETOT\n");
-        output(&sys, erg, traj);
+        output( &sys, erg, traj );
     }
-
+    
     /**************************************************/
     /* main MD loop */
     for(sys.nfi=1; sys.nfi <= sys.nsteps; ++sys.nfi) {
@@ -68,8 +81,10 @@ int main(int argc, char **argv) {
         }
 
         /* propagate system and recompute energies */
-        velverlet(&sys);
-        ekin(&sys);
+        seconds -= wallclock(); 
+        velverlet( &sys );
+        ekin( &sys );
+        seconds += wallclock(); 
     }
     /**************************************************/
 
@@ -94,5 +109,7 @@ int main(int argc, char **argv) {
     #ifdef _MPI 
     mpi_finalize( &sys ); 
     #endif 
+
+    printf( "Execution time (seconds): %lf\n", seconds ); 
     return 0;
 }

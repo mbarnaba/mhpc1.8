@@ -38,6 +38,7 @@ const double mvsq2e=2390.05736153349; /* m*v^2 in kcal/mol */
 
 
 /* main */
+#ifndef MAKING_LIB
 int main(int argc, char **argv) {
     int nprint;
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
@@ -113,3 +114,4 @@ int main(int argc, char **argv) {
     printf( "Execution time (seconds): %lf\n", seconds ); 
     return 0;
 }
+#endif // MAKING_LIB

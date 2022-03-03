@@ -2,6 +2,7 @@
 #
 build/
 *.x
+*.xyz
 # Prerequisites
 *.d
 

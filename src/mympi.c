@@ -1,4 +1,7 @@
 #include "mympi.h"
+#include "prototypes.h"
+#include "utilities.h"
+
 
 
 void mpi_initialize(mdsys_t* sys) {

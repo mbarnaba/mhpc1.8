@@ -1,5 +1,5 @@
 IPATH=../include
-OPATH=../Objects
+OPATH=../Obj-openmp
 SRCS = $(wildcard *.c)
 OBJS_exe = $(SRCS:%.c=$(OPATH)/%.o)
 OBJS_openmp = $(SRCS:%.c=$(OPATH)/%.openmp.o)

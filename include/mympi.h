@@ -1,7 +1,9 @@
 #ifndef MPI_HEADER_GUARD
 #define MPI_HEADER_GUARD
 
+#ifdef USE_MPI
 #include <mpi.h>
+#endif
 
 #include "prototypes.h"
 

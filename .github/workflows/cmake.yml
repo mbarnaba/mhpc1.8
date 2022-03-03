@@ -29,9 +29,8 @@ jobs:
         mpi: ${{ matrix.mpi }}
 
     - name: Build
-      working-directory: ${{github.workspace}}/build
        # Build your program with the given configuration
-      run: cmake -DUSE_MPI=OFF ..
+      run: mkdir -p ${{github.workspace}}/build && cd ${{github.workspace}}/build && cmake -DUSE_MPI=OFF ..
 
     - name: Test
       working-directory: ${{github.workspace}}/build

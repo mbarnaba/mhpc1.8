@@ -33,8 +33,7 @@ int get_a_line(FILE *fp, char *buf)
 }
 
 
-int read_input(mdsys_t* sys, int * nprint, char * restfile, char * trajfile, char * ergfile, char * line)
-{
+int read_input(mdsys_t* sys, int * nprint, char * restfile, char * trajfile, char * ergfile, char * line) {
 	FILE *fp;
 	int i;
     /* read input file */
@@ -88,6 +87,5 @@ int read_input(mdsys_t* sys, int * nprint, char * restfile, char * trajfile, cha
         perror("cannot read restart file");
         return 3;
     }
-
     return 0;
 }

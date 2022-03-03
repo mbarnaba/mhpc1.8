@@ -2,6 +2,10 @@
 #include <math.h>
 #include <ctype.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif //_OPENMP
+
 /* helper function: apply minimum image convention */
 double pbc(double x, const double boxby2,const double twice_boxby2)
 {
@@ -47,6 +51,9 @@ void force(mdsys_t *sys)
     const double  rcsq = sys->rcut * sys->rcut;
     double rsq, rinv, r6;
     double rxffac, ryffac, rzffac;
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic) private(i, j, rsq, rx, ry, rz, ffac) reduction(+ : epot)
+#endif //_OPENMP
     for(i=0; i < (sys->natoms - 1); ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {
             /* particles have no interactions with themselves */

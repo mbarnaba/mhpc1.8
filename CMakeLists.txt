@@ -21,6 +21,8 @@ option( USE_NEWTON "Build with Newton's 3rd law (halvs the calculations)" ON )
 option( USE_MATH "Build with fast math operations and better organization of data" ON )
 option( USE_MPI "Build with MPI support" OFF )
 option( USE_OMP "Build with Open MP support" OFF )
+option( ENABLE_TESTING "Enable Testing" ON )
+option( RUN_GTEST "Enable Google tests" ON )
 
 
 add_compile_definitions( LJMD_VERSION=0.1 )
@@ -40,10 +42,10 @@ if (USE_OMP)
     check_include_file( omp.h HAVE_OMP_H )
     if(!HAVE_OMP_H)
         add_compile_definitions( _OMP=yes )
-	target_compile_options( 
-        ${target} PRIVATE 
-        -Wall -g -O3 -ffast-math -fomit-frame-pointer -fopenmp
-    )
+        target_compile_options( 
+            ${target} PRIVATE 
+            -Wall -g -O3 -ffast-math -fomit-frame-pointer -fopenmp
+        )
         list( APPEND EXTRA_LIBS ${OMP_C_LIBRARIES} )
     else()
         message( FATAL_ERROR "Must have OpenMP runtime and omp.h header file" )
@@ -92,7 +94,7 @@ if (USE_COMPILER)
     message( "using compiler opitmizations" )
     target_compile_options( 
         ${target} PRIVATE 
-        -Wall -g -O3 -ffast-math -fomit-frame-pointer 
+        -Wall -O3 -ffast-math -fomit-frame-pointer -fexpensive-optimizations -msse3 
     )
 endif()
 
@@ -108,7 +110,6 @@ endif()
 
 
 # let's enable this by default cause we are in a early dev stage
-set(ENABLE_TESTING true)
 if(ENABLE_TESTING)
     enable_testing()
 
@@ -119,7 +120,7 @@ if(ENABLE_TESTING)
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/examples/argon_108.rest ${CMAKE_CURRENT_BINARY_DIR}
     )
 
- execute_process(
+    execute_process(
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/examples/argon_2916.inp ${CMAKE_CURRENT_BINARY_DIR}
     )
     execute_process(
@@ -131,9 +132,33 @@ if(ENABLE_TESTING)
         COMMAND /bin/sh -c "${CMAKE_CURRENT_BINARY_DIR}/${target} < argon_108.inp && test -f argon_108.dat && test -f argon_108.xyz"
     )
     set_tests_properties( RunTest PROPERTIES PASS_REGULAR_EXPRESSION ".*Simulation Done.*" )
+
+    
+    # Google Test
+    if (RUN_GTEST) 
+        enable_language( CXX )
+        set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
+        include( GTest )
+        
+        add_library( mdlib ${SRC_FILES} )
+        target_compile_definitions( mdlib PRIVATE MAKING_LIB )
+        
+        add_executable( 
+            test_kinetic ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_kinetic.cpp 
+        )
+        target_include_directories( test_kinetic PRIVATE ${CMAKE_SOURCE_DIR}/include )
+
+        target_link_libraries( 
+            test_kinetic PRIVATE GTest::GTestMain GTest::GTest mdlib
+        )
+        add_test(
+            NAME Kinetic
+            COMMAND test_kinetic
+        )
+    endif(RUN_GTEST)
     
 
-    if (BUILD_WITH_MPI) 
+    if (USE_MPI) 
         set( nranks 2 )
 
         execute_process(
@@ -148,5 +173,5 @@ if(ENABLE_TESTING)
             RunTestMPI 
             PROPERTIES PASS_REGULAR_EXPRESSION ".*MPI successfuly finalized with ${nranks} ranks*."
         )
-    endif(BUILD_WITH_MPI)
+    endif(USE_MPI)
 endif(ENABLE_TESTING)

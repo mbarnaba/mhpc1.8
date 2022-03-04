@@ -34,10 +34,12 @@ where `FLAGi i=1, 2, 3, ...` can be among
 - RUN_GTEST      : Enable Google tests
 ```
 
-The native testing checks whether the code compiles and runs correctly. 
-If MPI support is enabled, the Test checks whether MPI runs and successfully finalizes.
-The option RUN_GTEST checks whether some functions behave as expected, for instance if the kinetic energy is computed correctly or the periodic boundary conditions are correctly imposed.
-For more deatils regarding testing, see the next section.
+The option ENABLE_TESTING enables native testing: actually some tests are already implemented to check whether the code compiles and runs correctly. 
+If MPI support is enabled, the test checks whether MPI runs and successfully finalizes.
+
+The option RUN_GTEST enables Google Tests.
+Some Google Tests have been already implemented to check whether some functions behave as expected, for instance if the kinetic energy is computed correctly or the periodic boundary conditions are correctly imposed.
+For more details regarding testing, see the next section.
 
 ## testing 
 

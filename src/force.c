@@ -19,10 +19,10 @@ double pbc(double x, const double boxby2,const double twice_boxby2)
 void ekin(mdsys_t *sys)
 {   
     int i;
-
+    const double prefactor = 0.5 * mvsq2e * sys->mass;
     sys->ekin=0.0;
     for (i=0; i<sys->natoms; ++i) {
-        sys->ekin += 0.5*mvsq2e*sys->mass*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
+        sys->ekin += prefactor*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
     }
     sys->temp = 2.0*sys->ekin/(3.0*sys->natoms-3.0)/kboltz;
 }
@@ -39,6 +39,7 @@ void force(mdsys_t *sys)
     const double half_box = 0.5*sys->box;
     const double twice_boxby2 = sys->box;
     /* zero energy and forces */
+    double local_epot = 0.0;
     sys->epot=0.0;
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
@@ -67,7 +68,7 @@ void force(mdsys_t *sys)
                 rinv=1.0/rsq;
                 r6 = rinv*rinv*rinv;
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
-                sys->epot  += r6*(c12*r6 - c6);
+                local_epot  += r6*(c12*r6 - c6);
                 rxffac = rx*ffac;
                 sys->fx[i] += rxffac;
                 sys->fx[j] -= rxffac;
@@ -80,6 +81,7 @@ void force(mdsys_t *sys)
             }
         }
     }
+    sys->epot = local_epot;
 }
 #elif defined(_NEWTON)
 /* force using Newton's third law */

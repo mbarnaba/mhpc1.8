@@ -19,7 +19,7 @@ endif()
 option( USE_COMPILER "Build with compiler optimizations enabled I support" ON )
 option( USE_NEWTON "Build with Newton's 3rd law (halve the calculations)" ON )
 option( USE_MATH "Build with fast math operations and better organization of data" ON )
-option( USE_MPI "Build with MPI support" ON )
+option( USE_MPI "Build with MPI support" OFF )
 option( USE_OMP "Build with Open MP support" OFF )
 option( ENABLE_TESTING "Enable Testing" ON )
 option( RUN_GTEST "Enable Google tests" ON )
@@ -179,7 +179,7 @@ if(ENABLE_TESTING)
         )
 
 
-	    add_executable( 
+	add_executable( 
             test_pbc ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_pbc.cpp 
         )
         target_include_directories( test_pbc PRIVATE ${CMAKE_SOURCE_DIR}/include )
@@ -192,5 +192,20 @@ if(ENABLE_TESTING)
             NAME PBC
             COMMAND test_pbc
         )
+
+	add_executable( 
+            test_force ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_force.cpp 
+        )
+        target_include_directories( test_force PRIVATE ${CMAKE_SOURCE_DIR}/include )
+        target_compile_definitions( test_force PRIVATE MAKING_LIB )
+
+        target_link_libraries( 
+            test_force PRIVATE GTest::GTestMain GTest::GTest mdlib
+        )
+        add_test(
+            NAME Force
+            COMMAND test_force
+        )
+
     endif(RUN_GTEST)    
 endif(ENABLE_TESTING)

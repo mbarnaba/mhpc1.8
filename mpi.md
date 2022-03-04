@@ -3,6 +3,7 @@
 
 A benchmark for MPI has been performed measuring computation times for [1, 48] cores for both argon_108.inp and argon_2916.inp. 
 The benchmark took place on 2 computational nodes with 24 Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz processors. 
+The executable was compiler with gcc-8.2.0 and openmpi-4.0.1.
 
 The results are presented below, both in graphical and tabular form. 
 The scaling is not bad but could be much better. 
@@ -10,7 +11,6 @@ It is however encouraging to see that the speedup improves with larger problem s
 
 
 ![MPI scaling](./mpi.svg)
-<img src="./mpi.svg">
 
 
 ```

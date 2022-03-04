@@ -1,3 +1,8 @@
+## Group 1:
+
+- Celoria, Marco &rarr; marco-celoria
+- Hasanuzzaman, Mohammad &rarr; hasanictp
+- Barnaba, Matteo &rarr; mbarnaba
 
 ## to compile and run the code
 cmake is required! 

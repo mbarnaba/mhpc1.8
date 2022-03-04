@@ -8,6 +8,9 @@
 #include <mpi.h>
 #endif  
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif //_OPENMP
 
 /* generic file- or pathname buffer length */
 #define BLEN 200

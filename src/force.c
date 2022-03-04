@@ -142,7 +142,7 @@ void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
     #ifdef _OPENMP
-    #pragma omp parallel for default(shared) schedule(auto) private(i, j, rx, ry, rz, r, ffac) reduction(+:tmp_epot)
+    #pragma omp parallel for default(shared) schedule(dynamic) private(i, j, rx, ry, rz, r, ffac) reduction(+:tmp_epot)
     #endif //_OPENMP
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {

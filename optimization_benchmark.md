@@ -19,6 +19,8 @@ Tests have been performed by running the `benchmark.sh` script on node with 12 c
 Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz
 ```
 
+with the compiler `gcc` version `8.2.0`.
+
 Particularly, we have measured the computational time, without counting the times it takes for input/output operations.
 Two cases have been considered the first with 108 argon atoms with 10000 steps (`argon_108.inp`), the second with 2916 argon atoms and 1000 steps (`argon_2916.inp`).
 We have performed 10 runs and take the average time.
@@ -28,8 +30,7 @@ Results are summarized in the following graphs
 ![optimization_time.png](img/optimization_time.png)
 ![optimization_speedup.png](img/optimization_speedup.png)
 
-
-The baseline time for 108 argon case is 21.2740526 seconds, while for the 2916 atoms we have 353.4211562 seconds, compiled with gcc version 8.2.0.
+The baseline time for 108 argon case is 21.2740526 seconds, while for the 2916 atoms we have 353.4211562 seconds.
 
 By compiling the same baseline code with the following optimization flags 
 

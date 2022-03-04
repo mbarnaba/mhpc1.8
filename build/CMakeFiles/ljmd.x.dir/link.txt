@@ -1,0 +1,1 @@
+/usr/bin/cc    CMakeFiles/ljmd.x.dir/src/force.c.o CMakeFiles/ljmd.x.dir/src/input.c.o CMakeFiles/ljmd.x.dir/src/ljmd.c.o CMakeFiles/ljmd.x.dir/src/output.c.o CMakeFiles/ljmd.x.dir/src/utilities.c.o CMakeFiles/ljmd.x.dir/src/verlet.c.o  -o ljmd.x  -lm 

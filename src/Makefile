@@ -1,10 +1,11 @@
 IPATH=../include
-OPATH=../Obj-openmp
+OPATH=../Obj-para
 SRCS = $(wildcard *.c)
 OBJS_exe = $(SRCS:%.c=$(OPATH)/%.o)
 OBJS_openmp = $(SRCS:%.c=$(OPATH)/%.openmp.o)
+OBJS_mpi = $(SRCS:%.c=$(OPATH)/%.mpi.o)
 HEADERS = $(wildcard $(IPATH)/*.h)
-EXE = ../ljmd-openmp.x
+EXE = ../ljmd-para.x
 CC = gcc
 CFLAGS = -I $(IPATH) -Wall -Wextra -ffast-math -fomit-frame-pointer -O3 -DLJMD_VERSION=1.0 -std=c99
 LDFLAGS=-lm -L. -g 
@@ -28,7 +29,15 @@ openmp: $(OBJS_openmp)
 $(OPATH)/%.openmp.o: %.c $(HEADERS)
 	$(CC) -c $(CFLAGS) $(OMPFLAGS) $< -o $@
 	
-.PHONY: openmp	
+.PHONY: openmp
+
+mpi: $(OBJS_mpi) $(HEADERS)
+	$(MPIC) $^ -o $(EXE) $(LDFLAGS) -DUSE_MPI 
+
+$(OPATH)/%.mpi.o: %.c $(HEADERS)
+	$(MPIC) -c $(CFLAGS) -DUSE_MPI $< -o $@
+
+.PHONY: mpi	
 
 clean:
 	rm -f $(OBJS_openmp)  

@@ -1,5 +1,5 @@
 Marco Celoria
-# Optimization benchmarck
+# Optimization benchmark
 
 In this brief note we report our benchmark for the LJMD code.
 Our main focus is the optimization of the serial code without considering parallelization aspects, specifically we optimized the force computation.
@@ -39,7 +39,8 @@ By compiling the same baseline code with the following optimization flags
 
 we get 3.0546928 and 93.6310114 seconds for the 108 and 2916 atoms cases, respectively, corresponding to a speedup of roughly 7x and 4x.
 
-By changing the algorithm to exploint Newton's third law we halve the computation and halve the time.
+By changing the algorithm to exploint Newton's third law we halve the computation and the computation time.
 Specifically, we get 1.4319414 seconds for the 108 atom case and 40.519560 seconds for 2916 atoms, i.e. roughly 2x speedup.
 
 Finally, by avoiding complex and costly mathematical operations (like powers, square roots and divisions) with simpler and more efficient ones together with a better use of data structure we get 1.2019493 seconds (1.2x) for the 108 atom cases and 39.6687816 seconds for 2916 atoms (only 1.02x indicating low performance improvement with system size).
+

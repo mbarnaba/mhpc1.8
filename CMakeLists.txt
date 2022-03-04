@@ -155,6 +155,20 @@ if(ENABLE_TESTING)
             NAME Kinetic
             COMMAND test_kinetic
         )
+
+
+	add_executable( 
+            test_pbc ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_pbc.cpp 
+        )
+        target_include_directories( test_pbc PRIVATE ${CMAKE_SOURCE_DIR}/include )
+
+        target_link_libraries( 
+            test_pbc PRIVATE GTest::GTestMain GTest::GTest mdlib
+        )
+        add_test(
+            NAME PBC
+            COMMAND test_pbc
+        )
     endif(RUN_GTEST)
     
 

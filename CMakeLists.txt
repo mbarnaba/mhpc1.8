@@ -16,8 +16,8 @@ else()
 endif()
 
 
-option( USE_COMPILER "Build with compilar optimizations enabled I support" ON )
-option( USE_NEWTON "Build with Newton's 3rd law (halvs the calculations)" ON )
+option( USE_COMPILER "Build with compiler optimizations enabled I support" ON )
+option( USE_NEWTON "Build with Newton's 3rd law (halve the calculations)" ON )
 option( USE_MATH "Build with fast math operations and better organization of data" ON )
 option( USE_MPI "Build with MPI support" ON )
 option( USE_OMP "Build with Open MP support" OFF )
@@ -147,7 +147,7 @@ if(ENABLE_TESTING)
         )
         set_tests_properties( 
             RunTestMPI 
-            PROPERTIES PASS_REGULAR_EXPRESSION ".*MPI successfuly finalized with ${nranks} ranks*."
+            PROPERTIES PASS_REGULAR_EXPRESSION ".*MPI successfully finalized with ${nranks} ranks*."
         )
     endif(USE_MPI)
 

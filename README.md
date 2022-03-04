@@ -11,7 +11,33 @@ cmake is required!
 ```
 where build_dir is optional (if not given it will default to './build') and can be 
 any directory. 
+By default `compile.sh` will compile the code with all the best optimizations, with MPI support and with Testing and Google test enabled.
+However, the users can turn on or off several compile options according to their preferences and/or run tests by means of cmake and:
 
+```
+>> mkdir build_dir
+>> cd build_dir
+>> cmake -DFLAG1=ON/OFF -DFLAG2=ON/OFF -DFLAG3=ON/OFF ..
+>> make
+>> ctest
+```  
+
+where `FLAGi i=1, 2, 3, ...` can be among
+
+```
+- USE_COMPILER   : Build with compiler optimizations enabled 
+- USE_NEWTON     : Build with Newton's 3rd law algorithm
+- USE_MATH       : Build with Newton's 3rd and fast math operations
+- USE_MPI        : Build with MPI support
+- USE_OMP        : Build with Open MP support
+- ENABLE_TESTING : Enable Testing
+- RUN_GTEST      : Enable Google tests
+```
+
+The native testing checks whether the code compiles and runs correctly. 
+If MPI support is enabled, the Test checks whether MPI runs and successfully finalizes.
+The option RUN_GTEST checks whether some functions behave as expected, for instance if the kinetic energy is computed correctly or the periodic boundary conditions are correctly imposed.
+For more deatils regarding testing, see the next section.
 
 ## testing 
 

@@ -11,7 +11,35 @@ cmake is required!
 ```
 where build_dir is optional (if not given it will default to './build') and can be 
 any directory. 
+By default `compile.sh` will compile the code with all the best optimizations, with MPI support and with Testing and Google test enabled.
+However, the users can turn on or off several compile options according to their preferences and/or run tests by means of cmake and:
 
+```
+>> mkdir build_dir
+>> cd build_dir
+>> cmake -DFLAG1=ON/OFF -DFLAG2=ON/OFF -DFLAG3=ON/OFF ..
+>> make
+>> ctest
+```  
+
+where `FLAGi i=1, 2, 3, ...` can be among
+
+```
+- USE_COMPILER   : Build with compiler optimizations enabled 
+- USE_NEWTON     : Build with Newton's 3rd law algorithm
+- USE_MATH       : Build with Newton's 3rd and fast math operations
+- USE_MPI        : Build with MPI support
+- USE_OMP        : Build with Open MP support
+- ENABLE_TESTING : Enable Testing
+- RUN_GTEST      : Enable Google tests
+```
+
+The option ENABLE_TESTING enables native testing: actually some tests are already implemented to check whether the code compiles and runs correctly. 
+If MPI support is enabled, the test checks whether MPI runs and successfully finalizes.
+
+The option RUN_GTEST enables Google Tests.
+Some Google Tests have been already implemented to check whether some functions behave as expected, for instance if the kinetic energy is computed correctly or the periodic boundary conditions are correctly imposed.
+For more details regarding testing, see the next section.
 
 ## testing 
 
@@ -58,6 +86,61 @@ if (RUN_GTEST)
 ```
 Please add the "MAKING_LIB" definition to your test (as show above) because MPI and Google Tests do not get along and otherwise your test will not compile 
 (sorry, I will fix this).
+
+# Optimization benchmark
+
+In this brief note we report our benchmark for the LJMD code.
+Our main focus is the optimization of the serial code without considering parallelization aspects, specifically we optimized the force computation.
+
+We have proceed incrementally:
+
+Starting from the baseline code, we first improve performances by exploiting the compiler, using optimization flags.
+
+Then, we have improved the algorithm by means of our knowledge of the physics of the system, specifically by taking advantage of Newton's third law.
+
+Finally, we have considered additional optimization such as substituting costly mathematical operations with faster ones and improving the data structure.
+
+Clearly, we have implemented these improvements having in mind that these shall be mergeable with MPI and OpenMP.
+Tests have been performed by running the `benchmark.sh` script on one node with 12 cpu cores
+
+```
+Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz
+```
+
+with the compiler `gcc` version `8.2.0`.
+
+Particularly, we have measured the computational time, without counting the time it takes for input/output operations.
+Two cases have been considered the first with 108 argon atoms with 10000 steps (`argon_108.inp`), the second with 2916 argon atoms and 1000 steps (`argon_2916.inp`).
+We have performed 10 runs and calculated the average time.
+
+Results are summarized in the following graphs 
+
+![optimization_time.png](img/optimization_time.png)
+![optimization_speedup.png](img/optimization_speedup.png)
+
+The baseline time for 108 argon case is 21.2740526 seconds, while for the 2916 atoms we have 353.4211562 seconds.
+
+By compiling the same baseline code with the following optimization flags 
+
+```
+-Wall -O3 -ffast-math -fomit-frame-pointer -fexpensive-optimizations -msse3 
+```
+
+we get 3.0546928 and 93.6310114 seconds for the 108 and 2916 atoms cases, respectively, corresponding to a speedup of roughly 7x and 4x.
+
+By changing the algorithm to exploint Newton's third law we halve the computation and the computation time.
+Specifically, we get 1.4319414 seconds for the 108 atom case and 40.519560 seconds for 2916 atoms, i.e. roughly 2x speedup.
+
+Finally, by avoiding complex and costly mathematical operations (like powers, square roots and divisions) with simpler and more efficient ones together with a better use of data structure we get 1.2019493 seconds (1.2x) for the 108 atom cases and 39.6687816 seconds for 2916 atoms (only 1.02x indicating low performance improvement with system size).
+
+```
+                      argon_108                 argon_2916    
+Optimization    seconds       speedup     seconds        speedup
+Baseline        21.2740526    1.00        353.4211562    1.00
++Compiler        3.0546928    6.96438      93.6310114    3.77462
++Newton          1.4319414    14.8568      40.5195604    8.72224
++Math            1.2019493    17.6996      39.687816     8.90503
+```
 
 
 # MPI benchmark 

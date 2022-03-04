@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef _MPI
+#ifdef _MPI 
+#include "mympi.h"
 #include <mpi.h>
 #endif  
 

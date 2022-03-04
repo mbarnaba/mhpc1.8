@@ -7,6 +7,10 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#ifdef _MPI
+#include <mpi.h>
+#endif //_MPI
+
 
 #include "prototypes.h"
 #include "utilities.h"

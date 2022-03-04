@@ -6,6 +6,11 @@
 #include <omp.h>
 #endif //_OPENMP
 
+#ifdef _MPI
+#include <mpi.h>
+#include "mympi.h"
+#endif //_MPI
+
 /* helper function: apply minimum image convention */
 double pbc(double x, const double boxby2,const double twice_boxby2)
 {
@@ -52,7 +57,7 @@ void force(mdsys_t *sys)
     double rsq, rinv, r6;
     double rxffac, ryffac, rzffac;
 #ifdef _OPENMP
-#pragma omp parallel for schedule(dynamic) private(i, j, rsq, rx, ry, rz, ffac) reduction(+ : epot)
+#pragma omp parallel for 
 #endif //_OPENMP
     for(i=0; i < (sys->natoms - 1); ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {
@@ -96,6 +101,9 @@ void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
     //Constants added to avoid computing pow,sqrt etc.
+   #ifdef _OPENMP
+   #pragma omp parallel for 
+   #endif //_OPENMP
     for(i=0; i < (sys->natoms - 1); ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {
             /* particles have no interactions with themselves */
@@ -133,6 +141,9 @@ void force(mdsys_t *sys)
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
+    #ifdef _OPENMP
+    #pragma omp parallel for 
+    #endif //_OPENMP
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
             /* particles have no interactions with themselves */

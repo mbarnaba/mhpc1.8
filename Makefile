@@ -16,3 +16,9 @@ clean:
 
 check: serial
 	$(MAKE) $(MFLAGS) -C examples check
+
+openmp:
+	$(MAKE) $(MFLAGS) -C src openmp
+
+mpi: 
+	$(MAKE) $(MFLAGS) -C src mpi

@@ -46,21 +46,14 @@ if(ENABLE_TESTING)
 or 
 ```
 if (RUN_GTEST) 
-    set( GSRC_FILES ${SRC_FILES} )
-    list( REMOVE_ITEM GSRC_FILES ${CMAKE_SOURCE_DIR}/src/mympi.c )
-
-    add_library( mdlib ${GSRC_FILES} )
-    target_compile_definitions( mdlib PRIVATE MAKING_LIB )
-    
-    enable_language( CXX )
-    set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
-    include( GTest )
-    
+    ...
+   
     add_executable( 
         test_kinetic ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_kinetic.cpp 
     )
     target_include_directories( test_kinetic PRIVATE ${CMAKE_SOURCE_DIR}/include )
     target_compile_definitions( test_kinetic PRIVATE MAKING_LIB )
+
 ...
 ```
 Please add the "MAKING_LIB" definition to your test (as show above) because MPI and Google Tests do not get along and otherwise your test will not compile 

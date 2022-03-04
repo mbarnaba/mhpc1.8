@@ -4,6 +4,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+#ifdef MAKING_LIB 
+#undef _MPI
+#endif
+
 #ifdef _MPI
 #include <mpi.h>
 #endif  

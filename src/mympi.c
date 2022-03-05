@@ -37,7 +37,7 @@ void mpi_finalize(mdsys_t* sys) {
 
     MPI_Finalize();
     #ifndef NDEBUG
-    printf( "MPI successfuly finalized with %d ranks\n", sys->mpiranks ); 
+    printf( "MPI successfully finalized with %d ranks\n", sys->mpiranks ); 
     #endif
 #endif //_MPI 
 }

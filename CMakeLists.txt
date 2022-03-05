@@ -16,10 +16,10 @@ else()
 endif()
 
 
-option( USE_COMPILER "Build with compilar optimizations enabled I support" ON )
-option( USE_NEWTON "Build with Newton's 3rd law (halvs the calculations)" ON )
+option( USE_COMPILER "Build with compiler optimizations enabled I support" ON )
+option( USE_NEWTON "Build with Newton's 3rd law (halve the calculations)" ON )
 option( USE_MATH "Build with fast math operations and better organization of data" ON )
-option( USE_MPI "Build with MPI support" OFF )
+option( USE_MPI "Build with MPI support" ON )
 option( USE_OMP "Build with Open MP support" OFF )
 option( ENABLE_TESTING "Enable Testing" ON )
 option( RUN_GTEST "Enable Google tests" ON )
@@ -132,32 +132,8 @@ if(ENABLE_TESTING)
         COMMAND /bin/sh -c "${CMAKE_CURRENT_BINARY_DIR}/${target} < argon_108.inp && test -f argon_108.dat && test -f argon_108.xyz"
     )
     set_tests_properties( RunTest PROPERTIES PASS_REGULAR_EXPRESSION ".*Simulation Done.*" )
-
     
-    # Google Test
-    if (RUN_GTEST) 
-        enable_language( CXX )
-        set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
-        include( GTest )
-        
-        add_library( mdlib ${SRC_FILES} )
-        target_compile_definitions( mdlib PRIVATE MAKING_LIB )
-        
-        add_executable( 
-            test_kinetic ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_kinetic.cpp 
-        )
-        target_include_directories( test_kinetic PRIVATE ${CMAKE_SOURCE_DIR}/include )
-
-        target_link_libraries( 
-            test_kinetic PRIVATE GTest::GTestMain GTest::GTest mdlib
-        )
-        add_test(
-            NAME Kinetic
-            COMMAND test_kinetic
-        )
-    endif(RUN_GTEST)
     
-
     if (USE_MPI) 
         set( nranks 2 )
 
@@ -171,7 +147,65 @@ if(ENABLE_TESTING)
         )
         set_tests_properties( 
             RunTestMPI 
-            PROPERTIES PASS_REGULAR_EXPRESSION ".*MPI successfuly finalized with ${nranks} ranks*."
+            PROPERTIES PASS_REGULAR_EXPRESSION ".*MPI successfully finalized with ${nranks} ranks*."
         )
     endif(USE_MPI)
+
+    
+    # Google Test
+    if (RUN_GTEST) 
+        set( GSRC_FILES ${SRC_FILES} )
+        list( REMOVE_ITEM GSRC_FILES ${CMAKE_SOURCE_DIR}/src/mympi.c )
+
+        add_library( mdlib ${GSRC_FILES} )
+        target_compile_definitions( mdlib PRIVATE MAKING_LIB )
+        
+        enable_language( CXX )
+        set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
+        include( GTest )
+        
+        add_executable( 
+            test_kinetic ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_kinetic.cpp 
+        )
+        target_include_directories( test_kinetic PRIVATE ${CMAKE_SOURCE_DIR}/include )
+        target_compile_definitions( test_kinetic PRIVATE MAKING_LIB )
+
+        target_link_libraries( 
+            test_kinetic PRIVATE GTest::GTestMain GTest::GTest mdlib
+        )
+        add_test(
+            NAME Kinetic
+            COMMAND test_kinetic
+        )
+
+
+	add_executable( 
+            test_pbc ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_pbc.cpp 
+        )
+        target_include_directories( test_pbc PRIVATE ${CMAKE_SOURCE_DIR}/include )
+        target_compile_definitions( test_pbc PRIVATE MAKING_LIB )
+
+        target_link_libraries( 
+            test_pbc PRIVATE GTest::GTestMain GTest::GTest mdlib
+        )
+        add_test(
+            NAME PBC
+            COMMAND test_pbc
+        )
+
+	add_executable( 
+            test_force ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_force.cpp 
+        )
+        target_include_directories( test_force PRIVATE ${CMAKE_SOURCE_DIR}/include )
+        target_compile_definitions( test_force PRIVATE MAKING_LIB )
+
+        target_link_libraries( 
+            test_force PRIVATE GTest::GTestMain GTest::GTest mdlib
+        )
+        add_test(
+            NAME Force
+            COMMAND test_force
+        )
+
+    endif(RUN_GTEST)    
 endif(ENABLE_TESTING)

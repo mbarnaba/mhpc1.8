@@ -1,2 +1,0 @@
-/usr/bin/ar qc libmdlib.a  CMakeFiles/mdlib.dir/src/force.c.o CMakeFiles/mdlib.dir/src/input.c.o CMakeFiles/mdlib.dir/src/ljmd.c.o CMakeFiles/mdlib.dir/src/output.c.o CMakeFiles/mdlib.dir/src/utilities.c.o CMakeFiles/mdlib.dir/src/verlet.c.o
-/usr/bin/ranlib libmdlib.a

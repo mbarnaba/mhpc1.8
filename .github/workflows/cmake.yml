@@ -24,7 +24,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: install-openmpi
-      run: sudo apt install libopenmpi-dev openmpi-bin
+      run: sudo apt install libopenmpi-dev openmpi-bin lam4-dev
       
     - name: build 
        # Build your program with the given configuration

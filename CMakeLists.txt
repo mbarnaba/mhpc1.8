@@ -179,7 +179,7 @@ if(ENABLE_TESTING)
         )
 
 
-	    add_executable( 
+	add_executable( 
             test_pbc ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_pbc.cpp 
         )
         target_include_directories( test_pbc PRIVATE ${CMAKE_SOURCE_DIR}/include )
@@ -192,5 +192,20 @@ if(ENABLE_TESTING)
             NAME PBC
             COMMAND test_pbc
         )
+
+	add_executable( 
+            test_force ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_force.cpp 
+        )
+        target_include_directories( test_force PRIVATE ${CMAKE_SOURCE_DIR}/include )
+        target_compile_definitions( test_force PRIVATE MAKING_LIB )
+
+        target_link_libraries( 
+            test_force PRIVATE GTest::GTestMain GTest::GTest mdlib
+        )
+        add_test(
+            NAME Force
+            COMMAND test_force
+        )
+
     endif(RUN_GTEST)    
 endif(ENABLE_TESTING)

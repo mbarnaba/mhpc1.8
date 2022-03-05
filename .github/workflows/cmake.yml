@@ -30,7 +30,7 @@ jobs:
 
     - name: Build
        # Build your program with the given configuration
-      run: mkdir -p ${{github.workspace}}/build && cd ${{github.workspace}}/build && cmake -DUSE_MPI=OFF .. && make
+      run: mkdir -p ${{github.workspace}}/build && cd ${{github.workspace}}/build && cmake .. && make
 
     - name: Test
       working-directory: ${{github.workspace}}/build

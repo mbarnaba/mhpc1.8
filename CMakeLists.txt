@@ -64,7 +64,7 @@ if (USE_MPI)
         list( APPEND SRC_FILES ${PROJECT_SOURCE_DIR}/src/mympi.c )
         list( APPEND EXTRA_LIBS ${MPI_C_LIBRARIES} )
     #else()
-        message( FATAL_ERROR "Must have mpi.h header file" )
+    #    message( FATAL_ERROR "Must have mpi.h header file" )
     #endif()
 endif()
 

@@ -23,17 +23,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: download-openmpi
-      run: wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.2.tar.gz
-    
-    - name: extract-openmpi
-      run: tar -xvf ./openmpi-4.0.2.tar.gz
-    
-    - name: configure-openmpi
-      run: ./openmpi-4.0.2/configure
-    
     - name: install-openmpi
-      run: make && sudo make install
+      run: sudo apt sudo apt install libopenmpi-dev openmpi-bin
       
     - name: build 
        # Build your program with the given configuration

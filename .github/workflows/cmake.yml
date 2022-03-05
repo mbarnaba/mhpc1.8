@@ -23,14 +23,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Setup MPI
+    - name: Setup
       uses: mpi4py/setup-mpi@v1
       with:
         mpi: ${{ matrix.mpi }}
-
-    - name: Build
+     
+    - name: Build 
        # Build your program with the given configuration
-      run: mkdir -p ${{github.workspace}}/build && cd ${{github.workspace}}/build && cmake -DUSE_MPI=OFF .. && make
+      run: mkdir -p ${{github.workspace}}/build && cd ${{github.workspace}}/build && cmake .. && make
 
     - name: Test
       working-directory: ${{github.workspace}}/build

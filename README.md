@@ -40,6 +40,7 @@ If MPI support is enabled, the test checks whether MPI runs and successfully fin
 The option RUN_GTEST enables Google Tests.
 Some Google Tests have been already implemented to check whether some functions behave as expected, for instance if the kinetic energy is computed correctly or the periodic boundary conditions are correctly imposed.
 For more details regarding testing, see the next section.
+For quick build use **`make openmp`** or **`make mpi`** 
 
 ## testing 
 
@@ -141,8 +142,18 @@ Baseline        21.2740526    1.00        353.4211562    1.00
 +Newton          1.4319414    14.8568      40.5195604    8.72224
 +Math            1.2019493    17.6996      39.687816     8.90503
 ```
+# Openmp benchmark
 
+```
+@ Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz 
 
+                      argon_108                 argon_2916  
+                        
+Optimization    seconds            		seconds 
+       
+Baseline        3.871814             	109.080262    
+openmp level1   1.581238           		41.131838 
+```
 # MPI benchmark 
 
 
@@ -155,7 +166,7 @@ The scaling is not bad but could be much better.
 It is however encouraging to see that the speedup improves with larger problem sizes. 
 
 
-![MPI scaling](./mpi.svg)
+![MPI scaling](img/mpi.svg)
 
 
 ```

@@ -6,6 +6,11 @@
 #include <omp.h>
 #endif //_OPENMP
 
+#ifdef _MPI
+#include <mpi.h>
+#include "mympi.h"
+#endif //_MPI
+
 /* helper function: apply minimum image convention */
 double pbc(double x, const double boxby2,const double twice_boxby2)
 {
@@ -16,14 +21,23 @@ double pbc(double x, const double boxby2,const double twice_boxby2)
 
 
 /* compute kinetic energy */
+
 void ekin(mdsys_t *sys)
 {   
     int i;
+
+    double ekin = 0.0;
     const double prefactor = 0.5 * mvsq2e * sys->mass;
+
     sys->ekin=0.0;
+    
+    #ifdef _OPENMP
+    #pragma omp parallel for default(shared) private(i) reduction(+ : ekin)
+    #endif
     for (i=0; i<sys->natoms; ++i) {
-        sys->ekin += prefactor*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
+        ekin += prefactor*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
     }
+    sys->ekin = ekin;
     sys->temp = 2.0*sys->ekin/(3.0*sys->natoms-3.0)/kboltz;
 }
 
@@ -52,9 +66,6 @@ void force(mdsys_t *sys)
     const double  rcsq = sys->rcut * sys->rcut;
     double rsq, rinv, r6;
     double rxffac, ryffac, rzffac;
-#ifdef _OPENMP
-#pragma omp parallel for schedule(dynamic) private(i, j, rsq, rx, ry, rz, ffac) reduction(+ : epot)
-#endif //_OPENMP
     for(i=0; i < (sys->natoms - 1); ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {
             /* particles have no interactions with themselves */
@@ -97,7 +108,6 @@ void force(mdsys_t *sys)
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
-    //Constants added to avoid computing pow,sqrt etc.
     for(i=0; i < (sys->natoms - 1); ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {
             /* particles have no interactions with themselves */
@@ -131,10 +141,14 @@ void force(mdsys_t *sys)
     const double half_box = 0.5*sys->box;
     const double twice_boxby2 = sys->box;
     /* zero energy and forces */
+    double tmp_epot = 0.0;
     sys->epot=0.0;
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
+    #ifdef _OPENMP
+    #pragma omp parallel for default(shared) schedule(dynamic) private(i, j, rx, ry, rz, r, ffac) reduction(+:tmp_epot)
+    #endif //_OPENMP
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
             /* particles have no interactions with themselves */
@@ -145,15 +159,18 @@ void force(mdsys_t *sys)
             rz=pbc(sys->rz[i] - sys->rz[j], half_box,twice_boxby2);
             r = sqrt(rx*rx + ry*ry + rz*rz);
             /* compute force and energy if within cutoff */
+           
             if (r < sys->rcut) {
                 ffac = -4.0*sys->epsilon*(-12.0*pow(sys->sigma/r,12.0)/r+6*pow(sys->sigma/r,6.0)/r);
-                sys->epot += 0.5*4.0*sys->epsilon*(pow(sys->sigma/r,12.0)-pow(sys->sigma/r,6.0));
+                tmp_epot += 0.5*4.0*sys->epsilon*(pow(sys->sigma/r,12.0)-pow(sys->sigma/r,6.0));
+                
                 sys->fx[i] += rx/r*ffac;
                 sys->fy[i] += ry/r*ffac;
                 sys->fz[i] += rz/r*ffac;
             }
         }
     }
+     sys->epot = tmp_epot;
 }
 #endif
 #else // _MPI 

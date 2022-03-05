@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/test_kinetic.dir/tests/test_kinetic.cpp.o  -o test_kinetic  lib/libgtest_main.a lib/libgtest.a libmdlib.a -lpthread 

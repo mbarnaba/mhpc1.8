@@ -21,6 +21,7 @@
 
 #ifdef _MPI 
 #include "mympi.h"
+#include <mpi.h>
 #endif 
 
 
